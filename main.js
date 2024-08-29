@@ -1,7 +1,6 @@
-const jsConfetti = new JSConfetti();
-const rawWords = await fetch("./words-es.json");
-const words = await rawWords.json();
+import { words } from "./words-es.js";
 
+const jsConfetti = new JSConfetti();
 const $paragraph = document.querySelector("p");
 const $input = document.querySelector("input");
 const $time = document.querySelector("time");
