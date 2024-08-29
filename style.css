@@ -1,0 +1,198 @@
+/* General styles */
+@font-face {
+  font-family: "rubik";
+  src: url("./rubik.ttf");
+}
+
+* {
+  box-sizing: border-box;
+  --background: #0a0a0a;
+  --on-background: #e5e5e5;
+  --on-background-variant: #d4d4d4;
+  --primary: #fb923c;
+  --outline: #404040;
+  --error: #f87171;
+  --done: #4ade80;
+  --surface: #171717;
+  --surface-variant: #262626;
+}
+
+body {
+  margin: 0;
+  color-scheme: dark;
+  font-family: "rubik", Georgia, "Times New Roman", Times, serif;
+  color: var(--on-background);
+  background-color: var(--background);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  fill: var(--on-background-variant);
+  vertical-align: middle;
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  padding: 12px 42px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 0;
+  color: var(--background);
+  background-color: var(--primary);
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+main {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+footer {
+  color: var(--on-background-variant);
+  margin: 1rem auto;
+}
+
+/* Game styles */
+time {
+  color: var(--primary);
+}
+
+p {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 22px;
+  width: 48%;
+}
+
+word {
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+word.incorrect {
+  color: var(--error);
+}
+
+word.correct {
+  color: var(--done);
+}
+
+word.current {
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+input {
+  font-family: inherit;
+  text-transform: lowercase;
+  outline: 0;
+  resize: none;
+  font-size: 18px;
+  padding: 8px;
+  border: 1px solid var(--surface-variant);
+  border-radius: 4px;
+  background-color: var(--surface);
+}
+
+/* Score styles */
+dialog {
+  width: 320px;
+  border-radius: 6px;
+  background-color: var(--surface);
+  border: var(--surface-variant) 1px solid;
+}
+
+dialog:-internal-dialog-in-top-layer::backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+dialog span#resume-keystrokes {
+  font-size: 12px;
+}
+
+dialog span#correct-keystrokes {
+  color: var(--done);
+}
+
+dialog span#incorrect-keystrokes {
+  color: var(--error);
+}
+
+dialog header {
+  text-align: center;
+}
+
+dialog header:focus {
+  outline: none;
+}
+
+dialog header h1 {
+  font-size: 46px;
+  margin: 0;
+}
+
+dialog header h4 {
+  font-weight: normal;
+  font-size: 14px;
+  margin: -8px 0 0 0;
+  color: var(--on-background-variant);
+}
+
+dialog span#incorrect-words {
+  color: var(--error);
+}
+
+dialog span#correct-words {
+  color: var(--done);
+}
+
+dialog span#words-per-minute {
+  color: var(--primary);
+}
+
+dialog ul {
+  width: 80%;
+  margin: 2rem auto;
+}
+
+dialog li {
+  padding: 6px 0;
+  font-size: 18px;
+  border-bottom: 1px solid;
+  border-color: var(--outline);
+  color: var(--on-background);
+  display: flex;
+  justify-content: space-between;
+}
+
+dialog li span:first-child {
+  color: var(--on-background-variant);
+}
+
+dialog footer {
+  display: flex;
+  justify-content: center;
+}
