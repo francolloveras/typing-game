@@ -7,7 +7,6 @@ const $time = document.querySelector("time");
 const $dialog = document.querySelector("dialog");
 const $restartButton = document.querySelector("button");
 
-// Defining utils constants variables.
 const INITIAL_TIME = 5;
 const SPACE_KEY = " ";
 
@@ -18,18 +17,15 @@ const formatTime = (seconds) => {
   return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
 };
 
-class TypingGame {
-  constructor({ words, time }) {
-    this.words = words;
-    this.time = time;
-    this.timeLeft = time;
-    this.gameStart = false;
-    this.score = {
-      keystrokes: [],
-    };
-  }
+let timeLeft = INITIAL_TIME;
+let gameStart = false;
+// TODO DELETE THIS VARIABLE.
+let score = {
+  keystrokes: [],
+};
 
-  init = () => {
+const game = {
+  init: () => {
     $paragraph.innerHTML = "";
 
     words.forEach((word, index) => {
@@ -48,25 +44,23 @@ class TypingGame {
     });
 
     $time.textContent = formatTime(INITIAL_TIME);
-  };
-
-  start = () => {
-    if (!this.gameStart) {
-      this.gameStart = true;
+  },
+  start: () => {
+    if (!gameStart) {
+      gameStart = true;
       const countdownInterval = setInterval(() => {
-        this.timeLeft--;
-        $time.textContent = formatTime(this.timeLeft);
+        timeLeft--;
+        $time.textContent = formatTime(timeLeft);
 
         // End the game when time reaches zero.
-        if (this.timeLeft < 0) {
+        if (timeLeft < 0) {
           clearInterval(countdownInterval);
-          this.end();
+          game.end();
         }
       }, 1000);
     }
-  };
-
-  update = ({ key, value }) => {
+  },
+  update: ({ key, value }) => {
     const $currentWord = document.querySelector("word.current");
     const successTyped = value.toLowerCase() === $currentWord.textContent.toLowerCase();
 
@@ -82,11 +76,10 @@ class TypingGame {
 
     // If key pressed is not space, save the keystroke letter.
     if (key !== SPACE_KEY && !successTyped) {
-      this.score.keystrokes.push(true);
+      score.keystrokes.push(true);
     }
-  };
-
-  setScore = () => {
+  },
+  end: () => {
     const $wordsPerMinute = document.querySelector("#words-per-minute");
     const $correctWords = document.querySelector("#correct-words");
     const $incorrectWords = document.querySelector("#incorrect-words");
@@ -97,14 +90,14 @@ class TypingGame {
 
     const totalIncorrectWords = document.querySelectorAll("word.incorrect").length;
     const totalCorrectWords = document.querySelectorAll("word.correct").length;
-    const totalWordsPerMinute = (totalCorrectWords * 60) / this.time;
+    const totalWordsPerMinute = (totalCorrectWords * 60) / INITIAL_TIME;
 
     $wordsPerMinute.textContent = Math.round(totalWordsPerMinute);
     $correctWords.textContent = totalCorrectWords;
     $incorrectWords.textContent = totalIncorrectWords;
 
-    const totalKeystrokes = this.score.keystrokes.length;
-    const correctKeystrokes = this.score.keystrokes.filter((keystroke) => keystroke).length;
+    const totalKeystrokes = score.keystrokes.length;
+    const correctKeystrokes = score.keystrokes.filter((keystroke) => keystroke).length;
     const incorrectKeystrokes = totalKeystrokes - correctKeystrokes;
 
     $totalKeystrokes.textContent = totalKeystrokes;
@@ -113,26 +106,21 @@ class TypingGame {
 
     const accuracy = (correctKeystrokes / totalKeystrokes) * 100;
     $accuracy.textContent = `${accuracy}%`;
-  };
 
-  end = () => {
     jsConfetti.addConfetti();
-    this.setScore();
     $dialog.showModal();
-  };
-
-  restart = () => {
-    this.gameStart = false;
-    this.timeLeft = this.time;
-    this.score = {
+  },
+  restart: () => {
+    gameStart = false;
+    timeLeft = INITIAL_TIME;
+    score = {
       keystrokes: [],
     };
-    this.init();
+    game.init();
     $dialog.close();
-  };
-}
+  },
+};
 
-const game = new TypingGame({ words, time: INITIAL_TIME });
 game.init();
 
 // Add keydown event listener to the input.
