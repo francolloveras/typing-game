@@ -15,6 +15,7 @@
   --done: #4ade80;
   --surface: #171717;
   --surface-variant: #262626;
+  --word-height: 31;
 }
 
 body {
@@ -85,7 +86,15 @@ p {
   display: flex;
   flex-wrap: wrap;
   font-size: 22px;
-  width: 48%;
+  width: 80%;
+  height: calc(var(--word-height) * 3px);
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  p {
+    width: 60%;
+  }
 }
 
 word {
@@ -111,6 +120,7 @@ input {
   outline: 0;
   resize: none;
   font-size: 18px;
+  width: 400px;
   padding: 8px;
   border: 1px solid var(--surface-variant);
   border-radius: 4px;

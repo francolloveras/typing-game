@@ -7,7 +7,7 @@ const $time = document.querySelector("time");
 const $dialog = document.querySelector("dialog");
 const $restartButton = document.querySelector("button");
 
-const INITIAL_TIME = 5;
+const INITIAL_TIME = 15;
 const SPACE_KEY = " ";
 
 const formatTime = (seconds) => {
@@ -41,7 +41,11 @@ const game = {
       }
 
       $paragraph.appendChild($word);
+      const rect = $word.getBoundingClientRect();
+      $word.setAttribute("top", rect.top);
     });
+
+    console.log($paragraph.childElementCount);
 
     $time.textContent = formatTime(INITIAL_TIME);
   },
@@ -62,6 +66,7 @@ const game = {
   },
   update: ({ key, value }) => {
     const $currentWord = document.querySelector("word.current");
+    const $nextWord = $currentWord.nextElementSibling;
     const successTyped = value.toLowerCase() === $currentWord.textContent.toLowerCase();
 
     // If key pressed is Space, change the current word.
@@ -71,7 +76,15 @@ const game = {
 
       // Remove current highlight and apply it to the next word.
       $currentWord.classList.remove("current");
-      $currentWord.nextElementSibling.classList.add("current");
+      $nextWord.classList.add("current");
+
+      // If the currentWord top is lower that the nextWord top scroll word height.
+      if ($currentWord.getAttribute("top") < $nextWord.getAttribute("top")) {
+        $paragraph.scroll({
+          top: $paragraph.scrollTop + $currentWord.clientHeight,
+          behavior: "smooth",
+        });
+      }
     }
 
     // If key pressed is not space, save the keystroke letter.
