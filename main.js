@@ -118,6 +118,7 @@ const game = {
     };
     game.init();
     $dialog.close();
+    $input.value = "";
   },
 };
 
