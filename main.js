@@ -28,7 +28,10 @@ const game = {
   init: () => {
     $paragraph.innerHTML = "";
 
-    words.forEach((word, index) => {
+    // Get randoms words sorted with Math.random() and slice based on average WPM record and the time.
+    const randomWords = words.toSorted(() => Math.random() - 0.5).slice(0, (300 / 60) * INITIAL_TIME);
+
+    randomWords.forEach((word, index) => {
       const $word = document.createElement("word");
       word.split("").forEach((letter) => {
         const $letter = document.createElement("letter");
