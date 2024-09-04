@@ -1,11 +1,12 @@
 import { words } from "./words-es.js";
 
 const jsConfetti = new JSConfetti();
+
 const $paragraph = document.querySelector("p");
 const $input = document.querySelector("input");
 const $time = document.querySelector("time");
-const $dialog = document.querySelector("dialog");
-const $restartButton = document.querySelector("button");
+const $dialogScore = document.querySelector("dialog#score");
+const $restartButton = document.querySelector("button#restart");
 
 const INITIAL_TIME = 15;
 const SPACE_KEY = " ";
@@ -47,8 +48,6 @@ const game = {
       const rect = $word.getBoundingClientRect();
       $word.setAttribute("top", rect.top);
     });
-
-    console.log($paragraph.childElementCount);
 
     $time.textContent = formatTime(INITIAL_TIME);
   },
@@ -124,7 +123,7 @@ const game = {
     $accuracy.textContent = `${accuracy}%`;
 
     jsConfetti.addConfetti();
-    $dialog.showModal();
+    $dialogScore.showModal();
   },
   restart: () => {
     gameStart = false;
@@ -133,7 +132,7 @@ const game = {
       keystrokes: [],
     };
     game.init();
-    $dialog.close();
+    $dialogScore.close();
     $input.value = "";
   },
 };
@@ -159,4 +158,21 @@ $input.addEventListener("keydown", (event) => {
 
 $restartButton.addEventListener("click", () => {
   game.restart();
+});
+
+// Settings logic
+
+const $dialogSettings = document.querySelector("dialog#settings");
+const $settingsButton = document.querySelector("button#settings");
+const $closeDialogButton = document.querySelector("button#close-dialog");
+const $timeInput = document.querySelector("input#time");
+
+$timeInput.value = INITIAL_TIME;
+
+$settingsButton.addEventListener("click", () => {
+  $dialogSettings.showModal();
+});
+
+$closeDialogButton.addEventListener("click", () => {
+  $dialogSettings.close();
 });
