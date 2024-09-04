@@ -1,18 +1,5 @@
 import { words } from "./words-es.js";
 
-// indifferent to the game. This code is only for my domain.
-document.addEventListener("DOMContentLoaded", () => {
-  const domain = window.location.hostname;
-
-  if (domain === "francolloveras.com") {
-    const baseTag = document.createElement("base");
-    const head = document.querySelector("head");
-    const link = document.querySelector("link");
-    baseTag.href = "/typing-game/";
-    head.insertBefore(baseTag, link);
-  }
-});
-
 const jsConfetti = new JSConfetti();
 
 const $paragraph = document.querySelector("p");

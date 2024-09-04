@@ -6,6 +6,20 @@
     <title>Typing Game By Franco Lloveras</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
+  <script>
+    // indifferent to the game. This code is only for my domain.
+    document.addEventListener("DOMContentLoaded", () => {
+      const domain = window.location.hostname;
+
+      if (domain === "francolloveras.com") {
+        const baseTag = document.createElement("base");
+        const head = document.querySelector("head");
+        const link = document.querySelector("link");
+        baseTag.href = "/typing-game/";
+        head.insertBefore(baseTag, link);
+      }
+    });
+  </script>
   <body>
     <nav>
       <h1>Typing Game!</h1>
