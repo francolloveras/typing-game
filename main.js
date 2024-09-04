@@ -6,8 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (domain === "francolloveras.com") {
     const baseTag = document.createElement("base");
+    const head = document.querySelector("head");
+    const link = document.querySelector("link");
     baseTag.href = "/typing-game/";
-    document.head.appendChild(baseTag);
+    head.insertBefore(baseTag, link);
   }
 });
 
