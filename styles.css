@@ -66,6 +66,13 @@ button.transparent:hover {
   background-color: var(--current-shadow);
 }
 
+button.surface {
+  font-size: 16px;
+  padding: 6px 12px;
+  color: var(--on-background-variant);
+  background-color: var(--surface-variant);
+}
+
 button.chip {
   font-size: 18px;
   padding: 12px 42px;
@@ -165,6 +172,31 @@ p {
   p {
     width: 60%;
   }
+}
+
+section {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+kbd {
+  position: relative;
+  border-radius: 6px;
+  padding: 4px 10px;
+  background-color: var(--surface-variant);
+}
+
+kbd::after {
+  content: "";
+  position: absolute;
+  left: -4px;
+  bottom: 6.38px;
+  border: solid var(--surface-variant);
+  border-width: 0 10px 10px 0;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
 }
 
 word {

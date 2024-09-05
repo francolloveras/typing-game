@@ -6,9 +6,9 @@ const $paragraph = document.querySelector("p");
 const $input = document.querySelector("input");
 const $time = document.querySelector("time");
 const $dialogScore = document.querySelector("dialog#score");
-const $restartButton = document.querySelector("button#restart");
+const $restartButtons = document.querySelectorAll("button#restart");
 
-const INITIAL_TIME = 15;
+const INITIAL_TIME = 5;
 const SPACE_KEY = " ";
 
 const formatTime = (seconds) => {
@@ -156,8 +156,19 @@ $input.addEventListener("keydown", (event) => {
   }
 });
 
-$restartButton.addEventListener("click", () => {
-  game.restart();
+$restartButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    game.restart();
+  });
+});
+
+// keyboard shortcut to restart the game.
+
+document.addEventListener("keydown", (event) => {
+  if (event.altKey && event.key.toLowerCase() === "r") {
+    event.preventDefault();
+    game.restart();
+  }
 });
 
 // Settings logic
