@@ -28,6 +28,14 @@ let score = {
 const game = {
   init: () => {
     $paragraph.innerHTML = "";
+    $input.value = "";
+    $dialogScore.close();
+
+    gameStart = false;
+    timeLeft = INITIAL_TIME;
+    score = {
+      keystrokes: [],
+    };
 
     // Get randoms words sorted with Math.random() and slice based on average WPM record and the time.
     const numberOfWords = (300 / 60) * INITIAL_TIME;
@@ -46,11 +54,12 @@ const game = {
       }
 
       $paragraph.appendChild($word);
+
       const rect = $word.getBoundingClientRect();
       $word.setAttribute("top", rect.top);
     });
 
-    $time.textContent = formatTime(INITIAL_TIME);
+    $time.textContent = formatTime(timeLeft);
   },
   start: () => {
     if (!gameStart) {
@@ -126,16 +135,6 @@ const game = {
     jsConfetti.addConfetti();
     $dialogScore.showModal();
   },
-  restart: () => {
-    gameStart = false;
-    timeLeft = INITIAL_TIME;
-    score = {
-      keystrokes: [],
-    };
-    game.init();
-    $dialogScore.close();
-    $input.value = "";
-  },
 };
 
 game.init();
@@ -159,7 +158,7 @@ $input.addEventListener("keydown", (event) => {
 
 $restartButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    game.restart();
+    game.init();
   });
 });
 
@@ -168,7 +167,7 @@ $restartButtons.forEach((button) => {
 document.addEventListener("keydown", (event) => {
   if (event.altKey && event.key.toLowerCase() === "r") {
     event.preventDefault();
-    game.restart();
+    game.init();
   }
 });
 
