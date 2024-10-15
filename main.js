@@ -1,4 +1,5 @@
-import { words } from "./words-es.js";
+import wordsEN from "./words-en.js";
+import wordsES from "./words-es.js";
 
 const jsConfetti = new JSConfetti();
 
@@ -13,6 +14,10 @@ const INITIAL_TIME = 5;
 const SPACE_KEY = " ";
 const BACKSPACE_KEY = "Backspace";
 const ACCENT_KEY = "Dead";
+
+console.log(navigator.language);
+
+const words = navigator.language === "en" ? wordsEN : wordsES;
 
 let timeLeft = INITIAL_TIME;
 let gameStart = false;
@@ -180,6 +185,7 @@ const $dialogSettings = document.querySelector("dialog#settings");
 const $settingsButton = document.querySelector("button#settings");
 const $closeDialogButton = document.querySelector("button#close-dialog");
 const $timeInput = document.querySelector("input#time");
+const $languageSelect = document.querySelector("select#page-language");
 
 $timeInput.value = INITIAL_TIME;
 
@@ -189,6 +195,29 @@ $settingsButton.addEventListener("click", () => {
 
 $closeDialogButton.addEventListener("click", () => {
   $dialogSettings.close();
+});
+
+function changeLanguage(language) {
+  const $translatable = document.querySelectorAll("[data-en]");
+
+  $translatable.forEach((element) => {
+    element.textContent = element.getAttribute(`data-${language}`);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Get saved language preference, if exists.
+  const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+
+  $languageSelect.value = savedLanguage;
+  changeLanguage(savedLanguage);
+
+  $languageSelect.addEventListener("change", (event) => {
+    const selectedLanguage = event.target.value;
+
+    localStorage.setItem("selectedLanguage", selectedLanguage);
+    changeLanguage(selectedLanguage);
+  });
 });
 
 // Util function to format time.
