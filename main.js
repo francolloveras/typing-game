@@ -15,10 +15,6 @@ const SPACE_KEY = " ";
 const BACKSPACE_KEY = "Backspace";
 const ACCENT_KEY = "Dead";
 
-console.log(navigator.language);
-
-const words = navigator.language === "en" ? wordsEN : wordsES;
-
 let timeLeft = INITIAL_TIME;
 let gameStart = false;
 let keystrokes = [];
@@ -31,6 +27,9 @@ function initGame() {
   gameStart = false;
   timeLeft = INITIAL_TIME;
   keystrokes = [];
+
+  const wordsLanguage = localStorage.getItem("wordsLanguage") || "en";
+  const words = wordsLanguage === "en" ? wordsEN : wordsES;
 
   const randomWords = words.toSorted(() => Math.random() - 0.5).slice(0, 300);
 
@@ -185,7 +184,8 @@ const $dialogSettings = document.querySelector("dialog#settings");
 const $settingsButton = document.querySelector("button#settings");
 const $closeDialogButton = document.querySelector("button#close-dialog");
 const $timeInput = document.querySelector("input#time");
-const $languageSelect = document.querySelector("select#page-language");
+const $pageLanguage = document.querySelector("select#page-language");
+const $wordsLanguage = document.querySelector("select#words-language");
 
 $timeInput.value = INITIAL_TIME;
 
@@ -197,7 +197,14 @@ $closeDialogButton.addEventListener("click", () => {
   $dialogSettings.close();
 });
 
-function changeLanguage(language) {
+$wordsLanguage.addEventListener("change", (event) => {
+  const selectedLanguage = event.target.value;
+
+  localStorage.setItem("wordsLanguage", selectedLanguage);
+  initGame();
+});
+
+function changePageLanguage(language) {
   const $translatable = document.querySelectorAll("[data-en]");
 
   $translatable.forEach((element) => {
@@ -205,19 +212,22 @@ function changeLanguage(language) {
   });
 }
 
+$pageLanguage.addEventListener("change", (event) => {
+  const selectedLanguage = event.target.value;
+
+  localStorage.setItem("selectedLanguage", selectedLanguage);
+  changePageLanguage(selectedLanguage);
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   // Get saved language preference, if exists.
-  const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+  const pageLanguage = localStorage.getItem("pageLanguage") || "en";
+  const wordsLanguage = localStorage.getItem("wordsLanguage") || "en";
 
-  $languageSelect.value = savedLanguage;
-  changeLanguage(savedLanguage);
+  $pageLanguage.value = pageLanguage;
+  changePageLanguage(pageLanguage);
 
-  $languageSelect.addEventListener("change", (event) => {
-    const selectedLanguage = event.target.value;
-
-    localStorage.setItem("selectedLanguage", selectedLanguage);
-    changeLanguage(selectedLanguage);
-  });
+  $wordsLanguage.value = wordsLanguage;
 });
 
 // Util function to format time.
