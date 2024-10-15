@@ -216,6 +216,11 @@ word.current {
   background-color: var(--current-shadow);
 }
 
+letter.incorrect {
+  text-decoration-line: underline;
+  color: var(--error);
+}
+
 /* Score styles */
 
 dialog {

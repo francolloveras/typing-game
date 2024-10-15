@@ -9,14 +9,14 @@ const $dialogScore = document.querySelector("dialog#score");
 const $restartButtons = document.querySelectorAll("button#restart");
 
 const INITIAL_TIME = 5;
+
 const SPACE_KEY = " ";
+const BACKSPACE_KEY = "Backspace";
+const ACCENT_KEY = "Dead";
 
 let timeLeft = INITIAL_TIME;
 let gameStart = false;
-// TODO DELETE THIS VARIABLE.
-let score = {
-  keystrokes: [],
-};
+let keystrokes = [];
 
 function initGame() {
   $paragraph.innerHTML = "";
@@ -25,9 +25,7 @@ function initGame() {
 
   gameStart = false;
   timeLeft = INITIAL_TIME;
-  score = {
-    keystrokes: [],
-  };
+  keystrokes = [];
 
   const randomWords = words.toSorted(() => Math.random() - 0.5).slice(0, 300);
 
@@ -58,6 +56,7 @@ function startGame() {
     const countdownInterval = setInterval(() => {
       timeLeft--;
       $time.textContent = formatTime(timeLeft);
+      $input.focus();
 
       // End the game when time reaches zero.
       if (timeLeft < 0) {
@@ -71,12 +70,12 @@ function startGame() {
 function updateGame({ key, value }) {
   const $currentWord = document.querySelector("word.current");
   const $nextWord = $currentWord.nextElementSibling;
-  const successTyped = value.toLowerCase() === $currentWord.textContent.toLowerCase();
+  const wordSuccessTyped = value.toLowerCase() === $currentWord.textContent.toLowerCase();
 
   // If key pressed is Space, change the current word.
   if (key === SPACE_KEY && value !== "") {
     // Update word's class based on correctness.
-    $currentWord.classList.add(successTyped ? "correct" : "incorrect");
+    $currentWord.classList.add(wordSuccessTyped ? "correct" : "incorrect");
 
     // Remove current highlight and apply it to the next word.
     $currentWord.classList.remove("current");
@@ -91,9 +90,21 @@ function updateGame({ key, value }) {
     }
   }
 
-  // If key pressed is not space, save the keystroke letter.
-  if (key !== SPACE_KEY && !successTyped) {
-    score.keystrokes.push(true);
+  // If key pressed is not space, backspace and accent key, save the keystroke letter.
+  if (key !== SPACE_KEY && key !== BACKSPACE_KEY && key !== ACCENT_KEY) {
+    const $letters = $currentWord.querySelectorAll("letter");
+    const $currentLetter = $letters[value.split("").length];
+
+    // Check if the key is the same as the last letter in the word.
+    const letterSuccessTyped = key.toLowerCase() === $currentLetter.textContent.toLowerCase();
+
+    if (letterSuccessTyped) {
+      $currentLetter.classList.remove("incorrect");
+    } else {
+      $currentLetter.classList.add("incorrect");
+    }
+
+    keystrokes.push(letterSuccessTyped);
   }
 }
 
@@ -114,8 +125,8 @@ function endGame() {
   $correctWords.textContent = totalCorrectWords;
   $incorrectWords.textContent = totalIncorrectWords;
 
-  const totalKeystrokes = score.keystrokes.length;
-  const correctKeystrokes = score.keystrokes.filter((keystroke) => keystroke).length;
+  const totalKeystrokes = keystrokes.length;
+  const correctKeystrokes = keystrokes.filter((keystroke) => keystroke).length;
   const incorrectKeystrokes = totalKeystrokes - correctKeystrokes;
 
   $totalKeystrokes.textContent = totalKeystrokes;
@@ -123,7 +134,7 @@ function endGame() {
   $incorrectKeystrokes.textContent = incorrectKeystrokes;
 
   const accuracy = (correctKeystrokes / totalKeystrokes) * 100;
-  $accuracy.textContent = `${accuracy}%`;
+  $accuracy.textContent = isNaN(accuracy) ? "0%" : `${accuracy.toFixed(2)}%`;
 
   jsConfetti.addConfetti();
   $dialogScore.showModal();
