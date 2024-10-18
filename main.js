@@ -1,181 +1,14 @@
-import { WORDS } from "./words.js";
+import Game from "./game.js";
 
-const jsConfetti = new JSConfetti();
+const $board = document.querySelector("main");
 
-const $paragraph = document.querySelector("p");
-const $input = document.querySelector("input");
-const $time = document.querySelector("time");
-const $dialogScore = document.querySelector("dialog#score");
-const $restartButtons = document.querySelectorAll("button#restart");
-
-const INITIAL_TIME = localStorage.getItem("gameTime") ?? 15;
-
-const SPACE_KEY = " ";
-const BACKSPACE_KEY = "Backspace";
-const ACCENT_KEY = "Dead";
-
-let timeLeft = INITIAL_TIME;
-let gameStart = false;
-let keystrokes = [];
-
-function initGame() {
-  $paragraph.innerHTML = "";
-  $input.value = "";
-  $dialogScore.close();
-
-  gameStart = false;
-  timeLeft = localStorage.getItem("gameTime") ?? 15;
-  keystrokes = [];
-
-  const wordsLanguage = localStorage.getItem("wordsLanguage") ?? "en";
-  const words = WORDS[wordsLanguage];
-
-  const randomWords = words.toSorted(() => Math.random() - 0.5).slice(0, 300);
-
-  randomWords.forEach((word, index) => {
-    const $word = document.createElement("word");
-    word.split("").forEach((letter) => {
-      const $letter = document.createElement("letter");
-      $letter.textContent = letter;
-      $word.appendChild($letter);
-    });
-
-    if (index === 0) {
-      $word.classList.add("current");
-    }
-
-    $paragraph.appendChild($word);
-
-    const rect = $word.getBoundingClientRect();
-    $word.setAttribute("top", rect.top);
-  });
-
-  $time.textContent = formatTime(timeLeft);
-}
-
-function startGame() {
-  if (!gameStart) {
-    gameStart = true;
-    const countdownInterval = setInterval(() => {
-      timeLeft--;
-      $time.textContent = formatTime(timeLeft);
-      $input.focus();
-
-      // End the game when time reaches zero.
-      if (timeLeft < 0) {
-        clearInterval(countdownInterval);
-        endGame();
-      }
-    }, 1000);
-  }
-}
-
-function updateGame({ key, value }) {
-  const $currentWord = document.querySelector("word.current");
-  const $nextWord = $currentWord.nextElementSibling;
-  const wordSuccessTyped = value.toLowerCase() === $currentWord.textContent.toLowerCase();
-
-  // If key pressed is Space, change the current word.
-  if (key === SPACE_KEY && value !== "") {
-    // Update word's class based on correctness.
-    $currentWord.classList.add(wordSuccessTyped ? "correct" : "incorrect");
-
-    // Remove current highlight and apply it to the next word.
-    $currentWord.classList.remove("current");
-    $nextWord.classList.add("current");
-
-    // If the currentWord top is lower that the nextWord top scroll word height.
-    if ($currentWord.getAttribute("top") < $nextWord.getAttribute("top")) {
-      $paragraph.scroll({
-        top: $paragraph.scrollTop + $currentWord.clientHeight,
-        behavior: "smooth",
-      });
-    }
-  }
-
-  // If key pressed is not space, backspace and accent key, save the keystroke letter.
-  if (key !== SPACE_KEY && key !== BACKSPACE_KEY && key !== ACCENT_KEY) {
-    const $letters = $currentWord.querySelectorAll("letter");
-    const $currentLetter = $letters[value.split("").length];
-
-    // Check if the key is the same as the last letter in the word.
-    const letterSuccessTyped = key.toLowerCase() === $currentLetter.textContent.toLowerCase();
-
-    if (letterSuccessTyped) {
-      $currentLetter.classList.remove("incorrect");
-    } else {
-      $currentLetter.classList.add("incorrect");
-    }
-
-    keystrokes.push(letterSuccessTyped);
-  }
-}
-
-function endGame() {
-  const $wordsPerMinute = document.querySelector("#words-per-minute");
-  const $correctWords = document.querySelector("#correct-words");
-  const $incorrectWords = document.querySelector("#incorrect-words");
-  const $totalKeystrokes = document.querySelector("#total-keystrokes");
-  const $correctKeystrokes = document.querySelector("#correct-keystrokes");
-  const $incorrectKeystrokes = document.querySelector("#incorrect-keystrokes");
-  const $accuracy = document.querySelector("#accuracy");
-
-  const totalIncorrectWords = document.querySelectorAll("word.incorrect").length;
-  const totalCorrectWords = document.querySelectorAll("word.correct").length;
-  const totalWordsPerMinute = (totalCorrectWords * 60) / INITIAL_TIME;
-
-  $wordsPerMinute.textContent = Math.round(totalWordsPerMinute);
-  $correctWords.textContent = totalCorrectWords;
-  $incorrectWords.textContent = totalIncorrectWords;
-
-  const totalKeystrokes = keystrokes.length;
-  const correctKeystrokes = keystrokes.filter((keystroke) => keystroke).length;
-  const incorrectKeystrokes = totalKeystrokes - correctKeystrokes;
-
-  $totalKeystrokes.textContent = totalKeystrokes;
-  $correctKeystrokes.textContent = correctKeystrokes;
-  $incorrectKeystrokes.textContent = incorrectKeystrokes;
-
-  const accuracy = (correctKeystrokes / totalKeystrokes) * 100;
-  $accuracy.textContent = isNaN(accuracy) ? "0%" : `${accuracy.toFixed(2)}%`;
-
-  jsConfetti.addConfetti();
-  $dialogScore.showModal();
-}
-
-initGame();
-
-// Add keydown event listener to the input.
-$input.addEventListener("keydown", (event) => {
-  if (event.ctrlKey ?? event.altKey ?? event.shiftKey) return;
-
-  // If a key was pressed, start the game.
-  startGame();
-
-  // Update the game with the value word.
-  const trimmedValue = $input.value.trim();
-  updateGame({ key: event.key, value: trimmedValue });
-
-  // if the spacebar is pressed clear the input value.
-  if (event.key === SPACE_KEY) {
-    $input.value = "";
-  }
+const game = new Game({
+  $board: $board,
+  time: localStorage.getItem("gameTime") ?? 15,
+  language: localStorage.getItem("wordsLanguage") ?? "en",
 });
 
-$restartButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    initGame();
-  });
-});
-
-// keyboard shortcut to restart the game.
-
-document.addEventListener("keydown", (event) => {
-  if (event.altKey && event.key.toLowerCase() === "r") {
-    event.preventDefault();
-    initGame();
-  }
-});
+game.init();
 
 // Settings logic
 
@@ -198,14 +31,14 @@ $gameTime.addEventListener("change", (event) => {
   const selectedTime = event.target.value;
 
   localStorage.setItem("gameTime", selectedTime);
-  initGame();
+  game.init();
 });
 
 $wordsLanguage.addEventListener("change", (event) => {
   const selectedLanguage = event.target.value;
 
   localStorage.setItem("wordsLanguage", selectedLanguage);
-  initGame();
+  game.init();
 });
 
 function changePageLanguage(language) {
@@ -234,11 +67,3 @@ document.addEventListener("DOMContentLoaded", () => {
   $pageLanguage.value = pageLanguage;
   changePageLanguage(pageLanguage);
 });
-
-// Util function to format time.
-function formatTime(seconds) {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-
-  return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
-}
