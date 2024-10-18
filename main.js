@@ -1,5 +1,4 @@
-import wordsEN from "./words-en.js";
-import wordsES from "./words-es.js";
+import { WORDS } from "./words.js";
 
 const jsConfetti = new JSConfetti();
 
@@ -29,7 +28,7 @@ function initGame() {
   keystrokes = [];
 
   const wordsLanguage = localStorage.getItem("wordsLanguage") ?? "en";
-  const words = wordsLanguage === "en" ? wordsEN : wordsES;
+  const words = WORDS[wordsLanguage];
 
   const randomWords = words.toSorted(() => Math.random() - 0.5).slice(0, 300);
 
