@@ -9,7 +9,7 @@ const $time = document.querySelector("time");
 const $dialogScore = document.querySelector("dialog#score");
 const $restartButtons = document.querySelectorAll("button#restart");
 
-const INITIAL_TIME = 5;
+const INITIAL_TIME = localStorage.getItem("gameTime") ?? 15;
 
 const SPACE_KEY = " ";
 const BACKSPACE_KEY = "Backspace";
@@ -25,10 +25,10 @@ function initGame() {
   $dialogScore.close();
 
   gameStart = false;
-  timeLeft = INITIAL_TIME;
+  timeLeft = localStorage.getItem("gameTime") ?? 15;
   keystrokes = [];
 
-  const wordsLanguage = localStorage.getItem("wordsLanguage") || "en";
+  const wordsLanguage = localStorage.getItem("wordsLanguage") ?? "en";
   const words = wordsLanguage === "en" ? wordsEN : wordsES;
 
   const randomWords = words.toSorted(() => Math.random() - 0.5).slice(0, 300);
@@ -148,7 +148,7 @@ initGame();
 
 // Add keydown event listener to the input.
 $input.addEventListener("keydown", (event) => {
-  if (event.ctrlKey || event.altKey || event.shiftKey) return;
+  if (event.ctrlKey ?? event.altKey ?? event.shiftKey) return;
 
   // If a key was pressed, start the game.
   startGame();
@@ -183,11 +183,9 @@ document.addEventListener("keydown", (event) => {
 const $dialogSettings = document.querySelector("dialog#settings");
 const $settingsButton = document.querySelector("button#settings");
 const $closeDialogButton = document.querySelector("button#close-dialog");
-const $timeInput = document.querySelector("input#time");
+const $gameTime = document.querySelector("select#game-time");
 const $pageLanguage = document.querySelector("select#page-language");
 const $wordsLanguage = document.querySelector("select#words-language");
-
-$timeInput.value = INITIAL_TIME;
 
 $settingsButton.addEventListener("click", () => {
   $dialogSettings.showModal();
@@ -195,6 +193,13 @@ $settingsButton.addEventListener("click", () => {
 
 $closeDialogButton.addEventListener("click", () => {
   $dialogSettings.close();
+});
+
+$gameTime.addEventListener("change", (event) => {
+  const selectedTime = event.target.value;
+
+  localStorage.setItem("gameTime", selectedTime);
+  initGame();
 });
 
 $wordsLanguage.addEventListener("change", (event) => {
@@ -221,13 +226,14 @@ $pageLanguage.addEventListener("change", (event) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   // Get saved language preference, if exists.
-  const pageLanguage = localStorage.getItem("pageLanguage") || "en";
-  const wordsLanguage = localStorage.getItem("wordsLanguage") || "en";
+  const gameTime = localStorage.getItem("gameTime") ?? 15;
+  const pageLanguage = localStorage.getItem("pageLanguage") ?? "en";
+  const wordsLanguage = localStorage.getItem("wordsLanguage") ?? "en";
 
+  $gameTime.value = gameTime;
+  $wordsLanguage.value = wordsLanguage;
   $pageLanguage.value = pageLanguage;
   changePageLanguage(pageLanguage);
-
-  $wordsLanguage.value = wordsLanguage;
 });
 
 // Util function to format time.
