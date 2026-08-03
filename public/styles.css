@@ -21,7 +21,7 @@
 }
 
 body {
-  margin: 0;
+  margin: 0 auto;
   color-scheme: dark;
   font-family: 'geist', Georgia, 'Times New Roman', Times, serif;
   color: var(--on-background);
@@ -29,6 +29,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  max-width: 56rem;
 }
 
 .icon {
@@ -144,7 +145,7 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -164,15 +165,10 @@ p {
   flex-wrap: wrap;
   align-items: start;
   font-size: 22px;
-  width: 80%;
+  width: 100%;
   height: calc(var(--word-height) * 3px);
+  text-wrap: pretty;
   overflow: hidden;
-}
-
-@media (min-width: 1024px) {
-  p {
-    width: 60%;
-  }
 }
 
 section {
@@ -225,7 +221,7 @@ letter.incorrect {
 /* Score styles */
 
 dialog {
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 6px;
   background-color: var(--surface);
   border: var(--surface-variant) 1px solid;
@@ -284,8 +280,8 @@ dialog span#words-per-minute {
 }
 
 dialog ul {
-  width: 80%;
-  margin: 2rem auto;
+  width: 90%;
+  margin: 0.5rem auto 1.5rem auto;
 }
 
 dialog li {
