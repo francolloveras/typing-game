@@ -30,7 +30,7 @@ export default class Game {
     this.restart()
 
     const words = WORDS[this.language]
-    const randomWords = words.toSorted(() => Math.random() - 0.5).slice(0, 300)
+    const randomWords = words.toSorted(() => Math.random() - 0.5).slice(0, 350)
 
     randomWords.forEach((word, index) => {
       const $word = document.createElement('word')
