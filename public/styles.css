@@ -43,11 +43,12 @@ body {
 
 a {
   text-decoration: none;
-  color: var(--primary);
+  color: var(--on-background-variant);
 }
 
 a:hover {
   text-decoration: underline;
+  color: var(--primary);
 }
 
 button {
