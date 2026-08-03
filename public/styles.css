@@ -1,8 +1,8 @@
 /* General styles */
 
 @font-face {
-  font-family: 'rubik';
-  src: url('./rubik.ttf');
+  font-family: 'geist';
+  src: url('./geist.ttf');
 }
 
 * {
@@ -23,7 +23,7 @@
 body {
   margin: 0;
   color-scheme: dark;
-  font-family: 'rubik', Georgia, 'Times New Roman', Times, serif;
+  font-family: 'geist', Georgia, 'Times New Roman', Times, serif;
   color: var(--on-background);
   background-color: var(--background);
   display: flex;
